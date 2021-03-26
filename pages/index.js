@@ -5,7 +5,10 @@ export default function IndexPage() {
 
   return (
     <div>
-      Hello köcsögök. <Link href="/about">About</Link>
+      <Link href="/about">About</Link>
+
+      <h2>Hello köcsögök</h2>
+
       {metamask && (
         <>
           <p>Metamask installed.</p>
