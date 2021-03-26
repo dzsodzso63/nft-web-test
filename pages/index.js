@@ -14,7 +14,7 @@ export default function IndexPage() {
           <p>
             {!metamask.selectedAddress && (
               <button
-                class="enableEthereumButton"
+                className="enableEthereumButton"
                 onClick={() => {
                   metamask.request({
                     method: "eth_requestAccounts"
