@@ -1,7 +1,16 @@
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function IndexPage() {
   const metamask = typeof window !== "undefined" && window.ethereum;
+
+  const [account, setAccount] = useState(0);
+
+  useEffect(() => {
+    if (metamask && metamask.selectedAddress) {
+      setAccount(metamask.selectedAddress);
+    }
+  }, [metamask]);
 
   return (
     <div>
@@ -13,15 +22,15 @@ export default function IndexPage() {
         <>
           <p>Metamask installed.</p>
           <p>Network version: {metamask.networkVersion}</p>
-          <p>ETH Address: {metamask.selectedAddress}</p>
+          <p>ETH Address: {account}</p>
           <p>
             {!metamask.selectedAddress && (
               <button
                 className="enableEthereumButton"
                 onClick={() => {
-                  console.log(metamask.request({
+                  metamask.request({
                     method: "eth_requestAccounts"
-                  }));
+                  }).then((addresses) => addresses && setAccount(addresses[0]));
                 }}
               >
                 Enable Ethereum
