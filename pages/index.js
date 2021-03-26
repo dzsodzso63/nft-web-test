@@ -2,11 +2,13 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function IndexPage() {
-  const metamask = typeof window !== "undefined" && window.ethereum;
-
-  const [account, setAccount] = useState(0);
+  const [account, setAccount] = useState();
+  const [metamask, setMetamask] = useState();
 
   useEffect(() => {
+    if (!metamask && (typeof window !== "undefined")) {
+      setMetamask(window.ethereum);
+    }
     if (metamask && metamask.selectedAddress) {
       setAccount(metamask.selectedAddress);
     }
