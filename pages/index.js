@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export default function IndexPage() {
-  const metamask = window.ethereum;
+  const metamask = typeof window !== "undefined" && window.ethereum;
 
   return (
     <div>
