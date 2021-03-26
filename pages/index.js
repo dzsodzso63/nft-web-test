@@ -26,7 +26,7 @@ export default function IndexPage() {
           <p>Network version: {metamask.networkVersion}</p>
           <p>ETH Address: {account}</p>
           <p>
-            {!metamask.selectedAddress && (
+            {!account && (
               <button
                 className="enableEthereumButton"
                 onClick={() => {
