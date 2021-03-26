@@ -19,9 +19,9 @@ export default function IndexPage() {
               <button
                 className="enableEthereumButton"
                 onClick={() => {
-                  metamask.request({
+                  console.log(metamask.request({
                     method: "eth_requestAccounts"
-                  });
+                  }));
                 }}
               >
                 Enable Ethereum
@@ -30,6 +30,8 @@ export default function IndexPage() {
           </p>
         </>
       )}
+
+      {!metamask && <p>Please install MetaMask!</p>}
     </div>
   );
 }
