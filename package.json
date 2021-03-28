@@ -5,7 +5,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "post-update": "yarn upgrade --latest"
+    "post-update": "yarn upgrade --latest",
+    "test": "tsc --noEmit"
   },
   "dependencies": {
     "@pinata/sdk": "^1.1.13",
