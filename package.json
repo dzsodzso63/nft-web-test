@@ -12,11 +12,15 @@
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "unfetch": "4.2.0"
+    "unfetch": "4.2.0",
+    "styled-components": "^5.2.1"
   },
   "license": "MIT",
   "keywords": [
     "next"
   ],
-  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works."
+  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works.",
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.12.0"
+  }
 }

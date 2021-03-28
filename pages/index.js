@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import fetch from "unfetch";
+import { Billboard } from "../components/billboard/billboard";
+import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
+import { getTestBillboardData } from "../components/test-data";
 
 const jsonString = (obj) => {
   try {
@@ -73,6 +76,7 @@ export default function IndexPage() {
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
+      <Billboard data={getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.2)} />
     </div>
   );
 }
