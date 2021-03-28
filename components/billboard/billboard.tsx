@@ -31,7 +31,7 @@ export const Billboard = (props: BillboardProps) => {
 const BillboardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: solid 2px ${Colors.tilos};
+  outline: solid 2px ${Colors.tilos};
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   filter: drop-shadow(0 0 0.75rem ${Colors.lightGray});
