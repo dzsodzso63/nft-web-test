@@ -5,7 +5,7 @@ import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
 import { getTestBillboardData } from "../components/test-data";
 
-const jsonString = (obj) => {
+const jsonString = (obj: any) => {
   try {
     return JSON.stringify(obj);
   } catch (e) {
@@ -15,12 +15,12 @@ const jsonString = (obj) => {
 
 export default function IndexPage() {
   const [account, setAccount] = useState();
-  const [metamask, setMetamask] = useState();
-  const [apiResult, setApiResult] = useState();
+  const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
+  const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
   useEffect(() => {
     if (!metamask && typeof window !== "undefined") {
-      setMetamask(window.ethereum);
+      setMetamask((window as any).ethereum);
     }
     if (metamask && metamask.selectedAddress) {
       setAccount(metamask.selectedAddress);
@@ -52,9 +52,11 @@ export default function IndexPage() {
                 onClick={() => {
                   metamask
                     .request({
-                      method: "eth_requestAccounts"
+                      method: "eth_requestAccounts",
                     })
-                    .then((addresses) => addresses && setAccount(addresses[0]));
+                    .then(
+                      (addresses: any) => addresses && setAccount(addresses[0])
+                    );
                 }}
               >
                 Enable Ethereum
@@ -68,15 +70,17 @@ export default function IndexPage() {
             <textarea
               readOnly
               value={jsonString(apiResult)}
-              rows="10"
-              cols="80"
+              rows={10}
+              cols={80}
             />
           </p>
         </>
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
-      <Billboard data={getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.2)} />
+      <Billboard
+        data={getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.2)}
+      />
     </div>
   );
 }
