@@ -8,9 +8,7 @@ interface TileProps {
 }
 
 export function Tile(props: TileProps) {
-  const { url } = props.tile;
-
-  return <TileImg src={url} />;
+  return <TileImg src={props.tile.base64Url ?? ""} />;
 }
 
 const TileImg = styled.img`

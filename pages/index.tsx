@@ -1,9 +1,14 @@
+import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import fetch from "unfetch";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
-import { getTestBillboardData } from "../components/test-data";
+import {
+  BillboardData,
+  getTestBillboardData,
+  getTestBillboardDataUrls,
+} from "../components/test-data";
 
 const jsonString = (obj: any) => {
   try {
@@ -13,7 +18,23 @@ const jsonString = (obj: any) => {
   }
 };
 
-export default function IndexPage() {
+interface ServerSideProps {
+  billboardData: BillboardData;
+}
+
+export const getServerSideProps: GetStaticProps<{
+  billboardData: BillboardData;
+}> = async () => {
+  return {
+    props: {
+      billboardData: await getTestBillboardDataUrls(),
+    },
+  };
+};
+
+type IndexPageProps = ServerSideProps;
+
+export default function IndexPage(props: IndexPageProps) {
   const [account, setAccount] = useState();
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
@@ -38,7 +59,7 @@ export default function IndexPage() {
     <div>
       <Link href="/about">About</Link>
 
-      <h2>Hello köcsögök</h2>
+      <h2>Hello </h2>
 
       {metamask && (
         <>
@@ -78,9 +99,7 @@ export default function IndexPage() {
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
-      <Billboard
-        data={getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.2)}
-      />
+      <Billboard data={props.billboardData} />
     </div>
   );
 }
