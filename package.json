@@ -8,10 +8,11 @@
     "post-update": "yarn upgrade --latest"
   },
   "dependencies": {
-    "next": "latest",
     "@pinata/sdk": "^1.1.13",
+    "next": "latest",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "unfetch": "4.2.0"
   },
   "license": "MIT",
   "keywords": [

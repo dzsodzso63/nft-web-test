@@ -1,18 +1,27 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import fetch from "unfetch";
 
 export default function IndexPage() {
   const [account, setAccount] = useState();
   const [metamask, setMetamask] = useState();
+  const [apiResult, setApiResult] = useState();
 
   useEffect(() => {
-    if (!metamask && (typeof window !== "undefined")) {
+    if (!metamask && typeof window !== "undefined") {
       setMetamask(window.ethereum);
     }
     if (metamask && metamask.selectedAddress) {
       setAccount(metamask.selectedAddress);
     }
   }, [metamask]);
+
+  const fetchAPI = () => {
+    setApiResult("Loading...");
+    fetch("/api/image/")
+      .then((r) => r.json())
+      .then(setApiResult);
+  };
 
   return (
     <div>
@@ -30,14 +39,27 @@ export default function IndexPage() {
               <button
                 className="enableEthereumButton"
                 onClick={() => {
-                  metamask.request({
-                    method: "eth_requestAccounts"
-                  }).then((addresses) => addresses && setAccount(addresses[0]));
+                  metamask
+                    .request({
+                      method: "eth_requestAccounts"
+                    })
+                    .then((addresses) => addresses && setAccount(addresses[0]));
                 }}
               >
                 Enable Ethereum
               </button>
             )}
+          </p>
+          <p>
+            <button onClick={() => fetchAPI()}>API call test</button>
+            "/api/image/"
+            <br />
+            <textarea
+              readOnly
+              value={JSON.stringify(apiResult)}
+              rows="10"
+              cols="80"
+            />
           </p>
         </>
       )}
