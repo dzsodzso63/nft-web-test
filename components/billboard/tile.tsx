@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import styled from "styled-components";
 import { Colors } from "../colors";
 import { TILE_SIZE } from "../consts";
@@ -10,13 +12,8 @@ interface TileProps {
 export function Tile(props: TileProps) {
   const { url } = props.tile;
 
-  return <TileImg src={url} />;
+  return <Image src={url} width={TILE_SIZE} height={TILE_SIZE} />;
 }
-
-const TileImg = styled.img`
-  width: ${TILE_SIZE}px;
-  height: ${TILE_SIZE}px;
-`;
 
 export const EmptyTile = styled.div`
   width: ${TILE_SIZE}px;
