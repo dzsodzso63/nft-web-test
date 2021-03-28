@@ -2,6 +2,14 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import fetch from "unfetch";
 
+const jsonString = (obj) => {
+  try {
+    return JSON.stringify(obj);
+  } catch (e) {
+    return obj;
+  }
+};
+
 export default function IndexPage() {
   const [account, setAccount] = useState();
   const [metamask, setMetamask] = useState();
@@ -56,7 +64,7 @@ export default function IndexPage() {
             <br />
             <textarea
               readOnly
-              value={JSON.stringify(apiResult)}
+              value={jsonString(apiResult)}
               rows="10"
               cols="80"
             />
