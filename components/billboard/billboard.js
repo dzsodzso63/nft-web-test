@@ -28,6 +28,7 @@ const BillboardContainer = styled.div`
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   filter: drop-shadow(0 0 0.75rem ${Colors.lightGray});
+  user-select: none;
 `
 
 const BillboardRowContainer = styled.div`
