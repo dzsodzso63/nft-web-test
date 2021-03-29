@@ -9,6 +9,7 @@
     "test": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.10.0",
     "@pinata/sdk": "^1.1.13",
     "@types/styled-components": "^5.1.9",
     "next": "latest",

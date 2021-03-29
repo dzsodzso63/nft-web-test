@@ -8,7 +8,10 @@ import {
   BillboardData,
   getTestBillboardData,
   getTestBillboardDataUrls,
+  TileData,
+  TileSchema,
 } from "../components/test-data";
+import { queryAllItems } from "../utils/database";
 
 const jsonString = (obj: any) => {
   try {
@@ -22,12 +25,23 @@ interface ServerSideProps {
   billboardData: BillboardData;
 }
 
+const bilboardData = (queryResult: {Items: TileSchema[]}) => {
+  const items = queryResult.Items.map((item) => ({
+    bilboardID: item.BilboardID.S,
+    index:  item.TileIndex.N,
+    owner: item.owner.S,
+    url: item.url.S,
+    base64Url: item.DataURI.S,
+  })).reduce<{[index: string]: TileData}>((data, item) => ({...data, [item.index]: item}), {});
+  return Array.from({ length: BILLBOARD_HEIGHT }, (_, row) => Array.from({ length: BILLBOARD_WIDTH }, (_, col) => items[row * BILLBOARD_WIDTH + col] || null));
+};
+
 export const getServerSideProps: GetStaticProps<{
   billboardData: BillboardData;
 }> = async () => {
   return {
     props: {
-      billboardData: await getTestBillboardDataUrls(),
+      billboardData: bilboardData(await queryAllItems() as {Items: TileSchema[]}),
     },
   };
 };

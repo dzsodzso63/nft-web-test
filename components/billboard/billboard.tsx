@@ -18,7 +18,7 @@ export const Billboard = (props: BillboardProps) => {
           tile != null ? (
             <Tile key={`tile-${i}${j}`} tile={tile} />
           ) : (
-            <EmptyTile key={`tile-${i}${j}`} />
+            <EmptyTile key={`tile-${i}${j}`} row={i} col={j}/>
           )
         )}
       </BillboardRowContainer>

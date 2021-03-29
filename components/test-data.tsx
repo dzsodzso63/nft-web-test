@@ -1,31 +1,55 @@
-import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH, TILE_SIZE } from "./consts";
+import { queryAllItems } from "../utils/database";
+import { BILLBOARD_HEIGHT, BILLBOARD_ID, BILLBOARD_WIDTH, TILE_SIZE } from "./consts";
 
 export interface TileData {
+  bilboardID: string;
+  index: number;
   owner: string;
   url: string;
   base64Url: string | null;
 }
 
+export interface TileSchema {
+  BilboardID: {S: string};
+  TileIndex: {N: number};
+  owner: {S: string};
+  url: {S: string};
+  DataURI: {S: string};
+};
+
 export type BillboardData = Array<Array<TileData | null>>;
 
-export function getTestBillboardData(
+export async function getTestBillboardData(
   width: number,
   height: number,
   fillRatio: number
-): BillboardData {
-  return Array.from({ length: height }, () => getTestTileRow(width, fillRatio));
+): Promise<BillboardData> {
+  return Array.from({ length: height }, (_, row) => getTestTileRow(width, fillRatio, row));
 }
 
-function getTestTileRow(width: number, fillRatio: number) {
-  return Array.from({ length: width }, () =>
+function getTestTileRow(width: number, fillRatio: number, row: number) {
+  return Array.from({ length: width }, (_, col) =>
     Math.random() < fillRatio
       ? {
-          owner: randomString(),
-          url: `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`,
-          base64Url: null,
-        }
+        bilboardID: BILLBOARD_ID,
+        index: row * BILLBOARD_HEIGHT + col,
+        owner: randomString(),
+        url: `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`,
+        base64Url: null,
+      }
       : null
   );
+}
+
+export async function getTestTile(row: number, col: number) {
+  const url = `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`;
+  return {
+    BilboardID: BILLBOARD_ID,
+    TileIndex: row * BILLBOARD_HEIGHT + col,
+    owner: randomString(),
+    url,
+    DataURI: await createBase64UrlForUrl(url),
+  };
 }
 
 function randomString() {
@@ -52,7 +76,7 @@ async function createBase64UrlForUrl(src: string): Promise<string | null> {
 }
 
 export async function getTestBillboardDataUrls(): Promise<BillboardData> {
-  const data = getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.001);
+  const data = await getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.001);
   const dataWithBase64Urls = Promise.all(
     data.map(async (rows) =>
       Promise.all(
