@@ -42,15 +42,12 @@ export const putItem = async (item: {[key: string]: DDBAttributeSource;}) => {
 
 const runCommand = async (command: any) => {
   
-  const credentials = process.env.AWS_ACCESS_KEY_ID_TILOS && process.env.AWS_SECRET_ACCESS_KEY_TILOS && {
+  const credentials = process.env.AWS_ACCESS_KEY_ID_TILOS && process.env.AWS_SECRET_ACCESS_KEY_TILOS && {credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID_TILOS,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_TILOS,
-  };
+  }};
   
-  console.log('Command', { 
-    region: 'us-east-2',
-    ...{...credentials},
-  }, command)
+  console.log('Command', command);
 
   const dbclient = new DynamoDBClient({ 
     region: 'us-east-2',
