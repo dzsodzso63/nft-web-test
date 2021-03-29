@@ -47,7 +47,10 @@ const runCommand = async (command: any) => {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_TILOS,
   };
   
-  console.log('Command', credentials, command)
+  console.log('Command', { 
+    region: 'us-east-2',
+    ...{...credentials},
+  }, command)
 
   const dbclient = new DynamoDBClient({ 
     region: 'us-east-2',
