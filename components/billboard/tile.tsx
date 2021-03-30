@@ -1,6 +1,7 @@
+import React from "react";
 import styled from "styled-components";
 import { Colors } from "../colors";
-import { BILLBOARD_ID, BILLBOARD_WIDTH, TILE_SIZE } from "../consts";
+import { TILE_SIZE } from "../consts";
 import { getTestTileForDataUrl, TileData } from "../test-data";
 import { useRouter } from 'next/router';
 import { uploadImage } from "../../utils/image-upload";
@@ -27,11 +28,11 @@ export function EmptyTile(props: EmptyTileProps) {
 
   const router = useRouter();
 
-  const refreshData = () => {
+  const refreshData = React.useCallback(() => {
     router.replace(router.asPath);
-  }
+  }, [router]);
 
-  async function handleTileClick() {
+  const handleTileClick = React.useCallback(() => {
     uploadImage().then(async dataUrl => {
       const item = getTestTileForDataUrl(dataUrl, row, col);
       console.log(item, row, col)
@@ -49,7 +50,7 @@ export function EmptyTile(props: EmptyTileProps) {
     }).catch(e => {
       alert(e);
     });
-  }
+  }, [row, col, refreshData]);
 
   return <EmptyTileImg onClick={handleTileClick}/>;
 }
