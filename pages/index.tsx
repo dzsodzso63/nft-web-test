@@ -13,7 +13,7 @@ import {
 import { queryAllItems } from "../utils/database";
 
 interface ServerSideProps {
-  billboardData: BillboardData;
+  billboardData: BillboardData | null;
 }
 
 const bilboardData = (queryResult: {Items: TileSchema[]}) => {
@@ -31,9 +31,7 @@ const bilboardData = (queryResult: {Items: TileSchema[]}) => {
   return Array.from({ length: BILLBOARD_HEIGHT }, (_, row) => Array.from({ length: BILLBOARD_WIDTH }, (_, col) => items[row * BILLBOARD_WIDTH + col] || null));
 };
 
-export const getServerSideProps: GetStaticProps<{
-  billboardData: BillboardData;
-}> = async () => {
+export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
 
   const data = await queryAllItems();
 
