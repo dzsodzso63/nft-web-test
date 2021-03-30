@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { Colors } from "../colors";
 import { BILLBOARD_ID, BILLBOARD_WIDTH, TILE_SIZE } from "../consts";
-import { getTestTile, TileData } from "../test-data";
+import { getTestTileForDataUrl, TileData } from "../test-data";
 import { useRouter } from 'next/router';
+import { uploadImage } from "../../utils/image-upload";
 
 interface TileProps {
   tile: TileData;
@@ -31,19 +32,23 @@ export function EmptyTile(props: EmptyTileProps) {
   }
 
   async function handleTileClick() {
-    const item = await getTestTile(row, col);
-    console.log(item, row, col)
-    await fetch('/api/putitem/', {
-      method: 'PUT',
-      mode: 'same-origin',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ item }),
-    });
+    uploadImage().then(async dataUrl => {
+      const item = getTestTileForDataUrl(dataUrl, row, col);
+      console.log(item, row, col)
+      await fetch('/api/putitem/', {
+        method: 'PUT',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ item }),
+      });
 
-    refreshData();
+      refreshData();
+    }).catch(e => {
+      alert(e);
+    });
   }
 
   return <EmptyTileImg onClick={handleTileClick}/>;
