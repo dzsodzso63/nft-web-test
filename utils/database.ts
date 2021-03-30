@@ -51,12 +51,11 @@ const runCommand = async (command: any) => {
 
   const dbclient = new DynamoDBClient({ 
     region: 'us-east-2',
-    ...{...credentials},
+    ...credentials,
   });
 
   try {
     const data = await dbclient.send(command);
-    // console.log(data);
     return data;
   } catch (err) {
     console.error(err);

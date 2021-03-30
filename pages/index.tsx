@@ -1,7 +1,6 @@
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import fetch from "unfetch";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
 import {
@@ -13,19 +12,15 @@ import {
 } from "../components/test-data";
 import { queryAllItems } from "../utils/database";
 
-const jsonString = (obj: any) => {
-  try {
-    return JSON.stringify(obj);
-  } catch (e) {
-    return obj;
-  }
-};
-
 interface ServerSideProps {
   billboardData: BillboardData;
 }
 
 const bilboardData = (queryResult: {Items: TileSchema[]}) => {
+  if (!queryResult) {
+    return null;
+  }
+
   const items = queryResult.Items.map((item) => ({
     bilboardID: item.BilboardID.S,
     index:  item.TileIndex.N,
@@ -39,9 +34,12 @@ const bilboardData = (queryResult: {Items: TileSchema[]}) => {
 export const getServerSideProps: GetStaticProps<{
   billboardData: BillboardData;
 }> = async () => {
+
+  const data = await queryAllItems();
+
   return {
     props: {
-      billboardData: bilboardData(await queryAllItems() as {Items: TileSchema[]}),
+      billboardData: bilboardData(data as {Items: TileSchema[]}),
     },
   };
 };
@@ -61,13 +59,6 @@ export default function IndexPage(props: IndexPageProps) {
       setAccount(metamask.selectedAddress);
     }
   }, [metamask]);
-
-  const fetchAPI = () => {
-    setApiResult("Loading...");
-    fetch("/api/image/")
-      .then((r) => r.json())
-      .then(setApiResult);
-  };
 
   return (
     <div>
@@ -98,22 +89,11 @@ export default function IndexPage(props: IndexPageProps) {
               </button>
             )}
           </p>
-          <p>
-            <button onClick={() => fetchAPI()}>API call test</button>
-            "/api/image/"
-            <br />
-            <textarea
-              readOnly
-              value={jsonString(apiResult)}
-              rows={10}
-              cols={80}
-            />
-          </p>
         </>
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
-      <Billboard data={props.billboardData} />
+      { props.billboardData ? <Billboard data={props.billboardData} /> : 'Database error'}
     </div>
   );
 }
