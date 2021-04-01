@@ -35,7 +35,7 @@ const BillboardContainer = styled.div`
   outline: solid 2px ${Colors.tilos};
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
-  filter: drop-shadow(0 0 0.75rem ${Colors.lightGray});
+  box-shadow: 0px 0px 16px 5px ${Colors.lightGray};
   user-select: none;
 `;
 
