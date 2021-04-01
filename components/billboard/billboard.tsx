@@ -6,20 +6,34 @@ import { EmptyTile, Tile } from "./tile";
 
 interface BillboardProps {
   data: BillboardData;
-  owner?: string;
+  owner: string | null;
+  signedMessage: string | null;
 }
 
 export const Billboard = (props: BillboardProps) => {
-  const { data, owner } = props;
+  const { data, owner, signedMessage } = props;
 
   const rows = data.map((tileRow, i) => {
     return (
       <BillboardRowContainer key={`row-${i}`}>
         {tileRow.map((tile, j) =>
           tile != null ? (
-            <Tile key={`tile-${i}${j}`} row={i} col={j} tile={tile} account={owner}/>
+            <Tile
+              key={`tile-${i}${j}`}
+              row={i}
+              col={j}
+              tile={tile}
+              account={owner}
+              signedMessage={signedMessage}
+            />
           ) : (
-            <EmptyTile key={`tile-${i}${j}`} row={i} col={j} owner={owner}/>
+            <EmptyTile
+              key={`tile-${i}${j}`}
+              row={i}
+              col={j}
+              account={owner}
+              signedMessage={signedMessage}
+            />
           )
         )}
       </BillboardRowContainer>

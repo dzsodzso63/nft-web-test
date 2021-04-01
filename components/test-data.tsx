@@ -1,5 +1,10 @@
 import { queryAllItems } from "../utils/database";
-import { BILLBOARD_HEIGHT, BILLBOARD_ID, BILLBOARD_WIDTH, TILE_SIZE } from "./consts";
+import {
+  BILLBOARD_HEIGHT,
+  BILLBOARD_ID,
+  BILLBOARD_WIDTH,
+  TILE_SIZE,
+} from "./consts";
 
 export interface TileData {
   bilboardID: string;
@@ -10,12 +15,12 @@ export interface TileData {
 }
 
 export interface TileSchema {
-  BilboardID: {S: string};
-  TileIndex: {N: number};
-  owner: {S: string};
-  url: {S: string};
-  DataURI: {S: string};
-};
+  BilboardID: { S: string };
+  TileIndex: { N: number };
+  owner: { S: string };
+  url: { S: string };
+  DataURI: { S: string };
+}
 
 export type BillboardData = Array<Array<TileData | null>>;
 
@@ -24,19 +29,21 @@ export async function getTestBillboardData(
   height: number,
   fillRatio: number
 ): Promise<BillboardData> {
-  return Array.from({ length: height }, (_, row) => getTestTileRow(width, fillRatio, row));
+  return Array.from({ length: height }, (_, row) =>
+    getTestTileRow(width, fillRatio, row)
+  );
 }
 
 function getTestTileRow(width: number, fillRatio: number, row: number) {
   return Array.from({ length: width }, (_, col) =>
     Math.random() < fillRatio
       ? {
-        bilboardID: BILLBOARD_ID,
-        index: row * BILLBOARD_HEIGHT + col,
-        owner: randomString(),
-        url: `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`,
-        base64Url: null,
-      }
+          bilboardID: BILLBOARD_ID,
+          index: row * BILLBOARD_HEIGHT + col,
+          owner: randomString(),
+          url: `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`,
+          base64Url: null,
+        }
       : null
   );
 }
@@ -52,11 +59,16 @@ export async function getTestTile(row: number, col: number) {
   };
 }
 
-export function getTestTileForDataUrl(dataUrl: string, row: number, col: number, owner?: string) {
+export function getTestTileForDataUrl(
+  dataUrl: string,
+  row: number,
+  col: number,
+  owner: string
+) {
   return {
     BilboardID: BILLBOARD_ID,
     TileIndex: row * BILLBOARD_HEIGHT + col,
-    owner: owner || randomString(),
+    owner: owner,
     url: "http://lofasz.hu",
     DataURI: dataUrl,
   };
@@ -86,7 +98,11 @@ async function createBase64UrlForUrl(src: string): Promise<string | null> {
 }
 
 export async function getTestBillboardDataUrls(): Promise<BillboardData> {
-  const data = await getTestBillboardData(BILLBOARD_WIDTH, BILLBOARD_HEIGHT, 0.001);
+  const data = await getTestBillboardData(
+    BILLBOARD_WIDTH,
+    BILLBOARD_HEIGHT,
+    0.001
+  );
   const dataWithBase64Urls = Promise.all(
     data.map(async (rows) =>
       Promise.all(

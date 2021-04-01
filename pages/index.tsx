@@ -10,34 +10,42 @@ import {
   TileData,
   TileSchema,
 } from "../components/test-data";
+import { getAuthenticatedSignature } from "../utils/authenticate";
 import { queryAllItems } from "../utils/database";
 
 interface ServerSideProps {
   billboardData: BillboardData | null;
 }
 
-const bilboardData = (queryResult: {Items: TileSchema[]}) => {
+const bilboardData = (queryResult: { Items: TileSchema[] }) => {
   if (!queryResult) {
     return null;
   }
 
   const items = queryResult.Items.map((item) => ({
     bilboardID: item.BilboardID.S,
-    index:  item.TileIndex.N,
+    index: item.TileIndex.N,
     owner: item.owner.S,
     url: item.url.S,
     base64Url: item.DataURI.S,
-  })).reduce<{[index: string]: TileData}>((data, item) => ({...data, [item.index]: item}), {});
-  return Array.from({ length: BILLBOARD_HEIGHT }, (_, row) => Array.from({ length: BILLBOARD_WIDTH }, (_, col) => items[row * BILLBOARD_WIDTH + col] || null));
+  })).reduce<{ [index: string]: TileData }>(
+    (data, item) => ({ ...data, [item.index]: item }),
+    {}
+  );
+  return Array.from({ length: BILLBOARD_HEIGHT }, (_, row) =>
+    Array.from(
+      { length: BILLBOARD_WIDTH },
+      (_, col) => items[row * BILLBOARD_WIDTH + col] || null
+    )
+  );
 };
 
 export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
-
   const data = await queryAllItems();
 
   return {
     props: {
-      billboardData: bilboardData(data as {Items: TileSchema[]}),
+      billboardData: bilboardData(data as { Items: TileSchema[] }),
     },
   };
 };
@@ -45,7 +53,8 @@ export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
 type IndexPageProps = ServerSideProps;
 
 export default function IndexPage(props: IndexPageProps) {
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState(null);
+  const [signedMessage, setSignedMessage] = useState(null);
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
@@ -55,6 +64,9 @@ export default function IndexPage(props: IndexPageProps) {
     }
     if (metamask && metamask.selectedAddress) {
       setAccount(metamask.selectedAddress);
+      getAuthenticatedSignature(metamask).then((signatureResult) => {
+        setSignedMessage(signatureResult);
+      });
     }
   }, [metamask]);
 
@@ -91,7 +103,15 @@ export default function IndexPage(props: IndexPageProps) {
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
-      { props.billboardData ? <Billboard data={props.billboardData} owner={account}/> : 'Database error'}
+      {props.billboardData ? (
+        <Billboard
+          data={props.billboardData}
+          owner={account}
+          signedMessage={signedMessage}
+        />
+      ) : (
+        "Database error"
+      )}
     </div>
   );
 }

@@ -12,6 +12,7 @@
     "@aws-sdk/client-dynamodb": "^3.10.0",
     "@pinata/sdk": "^1.1.13",
     "@types/styled-components": "^5.1.9",
+    "eth-sig-util": "^3.0.1",
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
