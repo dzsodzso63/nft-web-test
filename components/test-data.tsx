@@ -52,11 +52,11 @@ export async function getTestTile(row: number, col: number) {
   };
 }
 
-export function getTestTileForDataUrl(dataUrl: string, row: number, col: number) {
+export function getTestTileForDataUrl(dataUrl: string, row: number, col: number, owner?: string) {
   return {
     BilboardID: BILLBOARD_ID,
     TileIndex: row * BILLBOARD_HEIGHT + col,
-    owner: randomString(),
+    owner: owner || randomString(),
     url: "http://lofasz.hu",
     DataURI: dataUrl,
   };

@@ -91,7 +91,7 @@ export default function IndexPage(props: IndexPageProps) {
       )}
 
       {!metamask && <p>Please install MetaMask!</p>}
-      { props.billboardData ? <Billboard data={props.billboardData} /> : 'Database error'}
+      { props.billboardData ? <Billboard data={props.billboardData} owner={account}/> : 'Database error'}
     </div>
   );
 }
