@@ -54,7 +54,6 @@ type IndexPageProps = ServerSideProps;
 
 export default function IndexPage(props: IndexPageProps) {
   const [account, setAccount] = useState(null);
-  const [signedMessage, setSignedMessage] = useState(null);
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
@@ -64,9 +63,6 @@ export default function IndexPage(props: IndexPageProps) {
     }
     if (metamask && metamask.selectedAddress) {
       setAccount(metamask.selectedAddress);
-      getAuthenticatedSignature(metamask).then((signatureResult) => {
-        setSignedMessage(signatureResult);
-      });
     }
   }, [metamask]);
 
@@ -107,7 +103,7 @@ export default function IndexPage(props: IndexPageProps) {
         <Billboard
           data={props.billboardData}
           owner={account}
-          signedMessage={signedMessage}
+          metamask={metamask}
         />
       ) : (
         "Database error"

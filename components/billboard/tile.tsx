@@ -5,20 +5,21 @@ import { TILE_SIZE } from "../consts";
 import { getTestTileForDataUrl, TileData } from "../test-data";
 import { NextRouter, useRouter } from "next/router";
 import { uploadImage } from "../../utils/image-upload";
+import { useGetAuthenticatedSignature } from "../../utils/authenticate";
 
 interface TileProps {
   tile: TileData;
   row: number;
   col: number;
   account: string | null;
-  signedMessage: string | null;
+  metamask: any | null;
 }
 
 interface EmptyTileProps {
   row: number;
   col: number;
   account: string | null;
-  signedMessage: string | null;
+  metamask: any | null;
 }
 
 const upload = (
@@ -56,20 +57,21 @@ const refresh = (router: NextRouter) =>
   }, [router]);
 
 export function Tile(props: TileProps) {
-  const { tile, account, row, col, signedMessage } = props;
+  const { tile, account, row, col, metamask } = props;
+  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
 
   const router = useRouter();
   const refreshData = refresh(router);
 
-  const handleTileClick = React.useCallback(() => {
+  const handleTileClick = React.useCallback(async () => {
     if (
       account != null &&
-      signedMessage != null &&
       (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
     ) {
+      const signedMessage = await getAuthenticatedSignature();
       upload(row, col, account, signedMessage).then(() => refreshData());
     }
-  }, [row, col, refreshData, account, signedMessage]);
+  }, [row, col, refreshData, account]);
 
   return (
     <TileImg
@@ -81,16 +83,18 @@ export function Tile(props: TileProps) {
 }
 
 export function EmptyTile(props: EmptyTileProps) {
-  const { row, col, account, signedMessage } = props;
+  const { row, col, account, metamask } = props;
+  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
 
   const router = useRouter();
   const refreshData = refresh(router);
 
-  const handleTileClick = React.useCallback(() => {
-    if (account != null && signedMessage != null) {
+  const handleTileClick = React.useCallback(async () => {
+    if (account != null) {
+      const signedMessage = await getAuthenticatedSignature();
       upload(row, col, account, signedMessage).then(() => refreshData());
     }
-  }, [row, col, refreshData, account, signedMessage]);
+  }, [row, col, refreshData, account]);
 
   return (
     <EmptyTileImg onClick={handleTileClick} title={account ?? undefined} />

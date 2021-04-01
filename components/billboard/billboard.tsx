@@ -7,11 +7,11 @@ import { EmptyTile, Tile } from "./tile";
 interface BillboardProps {
   data: BillboardData;
   owner: string | null;
-  signedMessage: string | null;
+  metamask: any | null;
 }
 
 export const Billboard = (props: BillboardProps) => {
-  const { data, owner, signedMessage } = props;
+  const { data, owner, metamask } = props;
 
   const rows = data.map((tileRow, i) => {
     return (
@@ -24,7 +24,7 @@ export const Billboard = (props: BillboardProps) => {
               col={j}
               tile={tile}
               account={owner}
-              signedMessage={signedMessage}
+              metamask={metamask}
             />
           ) : (
             <EmptyTile
@@ -32,7 +32,7 @@ export const Billboard = (props: BillboardProps) => {
               row={i}
               col={j}
               account={owner}
-              signedMessage={signedMessage}
+              metamask={metamask}
             />
           )
         )}

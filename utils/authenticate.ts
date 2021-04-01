@@ -1,5 +1,32 @@
+import * as React from "react";
 import { recoverPersonalSignature } from "eth-sig-util";
-const MESSAGE_TO_SIGN = "corgi butts drive me nuts";
+const MESSAGE_TO_SIGN =
+  "Please Sign this signature request to authenticate the tile image upload process";
+
+// TODO maybe use state management :DDDDDDD
+var signedMessage: { current: Promise<string> | null } = { current: null };
+
+export const useGetAuthenticatedSignature = (
+  metamask: any
+): (() => Promise<string>) => {
+  return React.useCallback((): Promise<string> => {
+    if (metamask == null) {
+      console.error("metamask is not defined");
+    }
+    console.log("getAuthenticatedSignature", signedMessage.current);
+    if (signedMessage.current == null) {
+      signedMessage.current = getAuthenticatedSignature(metamask).catch(
+        (error) => {
+          console.error("authentication error", error);
+          signedMessage.current = null;
+        }
+      );
+      return signedMessage.current;
+    } else {
+      return signedMessage.current;
+    }
+  }, [metamask]);
+};
 
 export const getAuthenticatedSignature = async (metamask: any) => {
   const accountAddress = metamask.selectedAddress;
