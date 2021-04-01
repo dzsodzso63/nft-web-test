@@ -52,7 +52,7 @@ export function Tile(props: TileProps) {
     if (account === tile.owner || !tile.owner.startsWith('0x')) {
       upload(row, col, account).then(() => refreshData());
     }
-  }, [row, col, refreshData]);
+  }, [row, col, refreshData, account]);
 
   return <TileImg src={props.tile.base64Url ?? ""} onClick={handleTileClick} title={tile.owner}/>;
 }
