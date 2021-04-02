@@ -5,7 +5,7 @@ import { TILE_SIZE } from "../consts";
 import { getTestTileForDataUrl, TileData } from "../test-data";
 import { NextRouter, useRouter } from "next/router";
 import { uploadImage } from "../../utils/image-upload";
-import { useGetAuthenticatedSignature } from "../../utils/authenticate";
+import { getAuthenticatedSignature } from "../../utils/authenticate";
 
 interface TileProps {
   tile: TileData;
@@ -58,7 +58,6 @@ const refresh = (router: NextRouter) =>
 
 export function Tile(props: TileProps) {
   const { tile, account, row, col, metamask } = props;
-  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
 
   const router = useRouter();
   const refreshData = refresh(router);
@@ -68,7 +67,7 @@ export function Tile(props: TileProps) {
       account != null &&
       (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
     ) {
-      const signedMessage = await getAuthenticatedSignature();
+      const signedMessage = await getAuthenticatedSignature(metamask);
       upload(row, col, account, signedMessage).then(() => refreshData());
     }
   }, [row, col, refreshData, account]);
@@ -84,14 +83,13 @@ export function Tile(props: TileProps) {
 
 export function EmptyTile(props: EmptyTileProps) {
   const { row, col, account, metamask } = props;
-  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
 
   const router = useRouter();
   const refreshData = refresh(router);
 
   const handleTileClick = React.useCallback(async () => {
     if (account != null) {
-      const signedMessage = await getAuthenticatedSignature();
+      const signedMessage = await getAuthenticatedSignature(metamask);
       upload(row, col, account, signedMessage).then(() => refreshData());
     }
   }, [row, col, refreshData, account]);
