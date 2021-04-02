@@ -69,7 +69,9 @@ export function Tile(props: TileProps) {
       (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
     ) {
       const signedMessage = await getAuthenticatedSignature();
-      upload(row, col, account, signedMessage).then(() => refreshData());
+      if (signedMessage != null) {
+        upload(row, col, account, signedMessage).then(() => refreshData());
+      }
     }
   }, [row, col, refreshData, account]);
 
@@ -92,7 +94,9 @@ export function EmptyTile(props: EmptyTileProps) {
   const handleTileClick = React.useCallback(async () => {
     if (account != null) {
       const signedMessage = await getAuthenticatedSignature();
-      upload(row, col, account, signedMessage).then(() => refreshData());
+      if (signedMessage != null) {
+        upload(row, col, account, signedMessage).then(() => refreshData());
+      }
     }
   }, [row, col, refreshData, account]);
 
