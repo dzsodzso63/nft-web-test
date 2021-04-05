@@ -46,11 +46,11 @@ export const Billboard = (props: BillboardProps) => {
 const BillboardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  outline: solid 2px ${Colors.tilos};
+  outline: solid 1px ${Colors.tilos};
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
-  box-shadow: 0px 0px 16px 5px ${Colors.lightGray};
   user-select: none;
+  background-color: ${Colors.tileBackground};
 `;
 
 const BillboardRowContainer = styled.div`

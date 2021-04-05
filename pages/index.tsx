@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
 import {
@@ -67,10 +68,10 @@ export default function IndexPage(props: IndexPageProps) {
   }, [metamask]);
 
   return (
-    <div>
-      <Link href="/about">About</Link>
+    <Main>
 
-      <h2>Hello </h2>
+      <h2>Million ETH Homepage</h2>
+      <Link href="/about">How it works</Link>
 
       {metamask && (
         <>
@@ -108,6 +109,16 @@ export default function IndexPage(props: IndexPageProps) {
       ) : (
         "Database error"
       )}
-    </div>
+    </Main>
   );
 }
+
+const Main = styled.div`
+  backdrop-filter: blur(300px);
+  color: #BFEEFC;
+  mix-blend-mode: normal;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #2C73FE;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1002px;
+`;
