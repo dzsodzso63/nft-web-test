@@ -52,8 +52,15 @@ export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
 
 type IndexPageProps = ServerSideProps;
 
+type Scaled = {
+  scale: number;
+};
+
+const getScale = () => (console.log('calc'), typeof window !== "undefined" ? window.innerHeight / 1066 : 1);
+
 export default function IndexPage(props: IndexPageProps) {
   const [account, setAccount] = useState<string | null>(null);
+  const [scale, setScale] = useState<number>(1);
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
@@ -66,9 +73,13 @@ export default function IndexPage(props: IndexPageProps) {
     }
   }, [metamask]);
 
+  useEffect(() => {
+    setScale(getScale());
+  }, []);
+
   return (
     <RecoilRoot>
-      <Container>
+      <Container scale={scale}>
         <Background />
         <Main>
           <Header metamask={metamask} account={account} setAccount={setAccount}/>
@@ -150,7 +161,7 @@ const Main = styled.div`
   color: #BFEEFC;
   mix-blend-mode: normal;
   text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9E00FF;
-  width: 100%;
+  width: 200%;
   display: flex;
   flex-direction: row;
   font-family: PT Mono;
@@ -159,10 +170,13 @@ const Main = styled.div`
   line-height: 95.5%;
 `;
 
-const Container = styled.div`
+const Container = styled.div<Scaled>`
   height: 1066px;
+  width: 200%;
   overflow: hidden;
   position: relative;
+  transform: scale(${props => props.scale || 1});
+  transform-origin: top left;
 `;
 
 const BilboardWrapper = styled.div`

@@ -48,6 +48,7 @@ export const Header = ({metamask, account, setAccount}: HeaderProps) => {
 const HeaderContainer = styled.div`
   width: 340px;
   padding: 32px;
+  overflow: hidden;
 `;
 
 const H3 = styled.div`
