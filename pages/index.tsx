@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { RecoilRoot } from "recoil";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
@@ -102,6 +102,18 @@ export default function IndexPage(props: IndexPageProps) {
 
 const Background = () => {
 
+  const rotate = keyframes`
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  `;
+  
+  const speed = 10;
+
   const Rectangles = [
     styled.div`
       position: absolute;
@@ -112,6 +124,7 @@ const Background = () => {
       background: #8000FF;
       opacity: 0.5;
       transform: rotate(-34.17deg);
+      animation: ${rotate} ${speed}s linear infinite;
     `,
     styled.div`
       position: absolute;
@@ -120,6 +133,7 @@ const Background = () => {
       left: -233px;
       top: 635px;
       background: #191B6A;
+      animation: ${rotate} ${speed}s linear infinite;
     `,
     styled.div`
       position: absolute;
@@ -128,6 +142,7 @@ const Background = () => {
       left: 1064px;
       top: -276px;
       background: rgba(255, 0, 172, 0.11);
+      animation: ${rotate} ${speed}s linear infinite;
     `,
     styled.div`
       position: absolute;
@@ -136,13 +151,15 @@ const Background = () => {
       left: 868px;
       top: 635px;      
       background: rgba(128, 0, 255, 0.3);
+      animation: ${rotate} ${speed}s linear infinite;
     `,
     styled.div`
       position: absolute;
       width: 1608px;
       height: 630px;
       left: 50px;
-      top: 0px;      
+      top: 0px;    
+      animation: ${rotate} ${speed}s linear infinite;  
       &:before {
         content: "TILOS";
         font-weight: 900;
