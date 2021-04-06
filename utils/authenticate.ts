@@ -1,31 +1,38 @@
 import * as React from "react";
+import { atom, useRecoilCallback } from "recoil";
 import { recoverPersonalSignature } from "eth-sig-util";
 const MESSAGE_TO_SIGN =
   "Please Sign this signature request to authenticate the tile image upload process";
 
-// TODO maybe use state management :DDDDDDD
-var signedMessage: { current: Promise<string> | null } = { current: null };
+const signedMessage = atom<Promise<string> | null>({
+  key: "signedMessage",
+  default: null,
+});
 
 export const useGetAuthenticatedSignature = (
   metamask: any
 ): (() => Promise<string>) => {
-  return React.useCallback((): Promise<string> => {
-    if (metamask == null) {
-      console.error("metamask is not defined");
-    }
-    console.log("getAuthenticatedSignature", signedMessage.current);
-    if (signedMessage.current == null) {
-      signedMessage.current = getAuthenticatedSignature(metamask).catch(
-        (error) => {
-          console.error("authentication error", error);
-          signedMessage.current = null;
-        }
-      );
-      return signedMessage.current;
-    } else {
-      return signedMessage.current;
-    }
-  }, [metamask]);
+  return useRecoilCallback(
+    ({ snapshot, set }) => async (): Promise<string> => {
+      const signedMessageCurrent = await snapshot.getPromise(signedMessage);
+      if (metamask == null) {
+        console.error("metamask is not defined");
+      }
+      if (signedMessageCurrent == null) {
+        const getSignaturePromise = getAuthenticatedSignature(metamask).catch(
+          (error) => {
+            console.error("authentication error", error);
+            set(signedMessage, null);
+          }
+        );
+        set(signedMessage, getSignaturePromise);
+        return getSignaturePromise;
+      } else {
+        return signedMessageCurrent;
+      }
+    },
+    [metamask]
+  );
 };
 
 export const getAuthenticatedSignature = async (metamask: any) => {

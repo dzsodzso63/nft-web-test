@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { RecoilRoot } from "recoil";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
 import {
@@ -68,48 +69,51 @@ export default function IndexPage(props: IndexPageProps) {
   }, [metamask]);
 
   return (
-    <Main>
+    <RecoilRoot>
+      <Main>
 
-      <h2>Million ETH Homepage</h2>
-      <Link href="/about">How it works</Link>
+        <h2>Million ETH Homepage</h2>
+        <Link href="/about">How it works</Link>
 
-      {metamask && (
-        <>
-          <p>Metamask installed.</p>
-          <p>Network version: {metamask.networkVersion}</p>
-          <p>ETH Address: {account}</p>
-          <p>
-            {!account && (
-              <button
-                className="enableEthereumButton"
-                onClick={() => {
-                  metamask
-                    .request({
-                      method: "eth_requestAccounts",
-                    })
-                    .then(
-                      (addresses: any) => addresses && setAccount(addresses[0])
-                    );
-                }}
-              >
-                Enable Ethereum
-              </button>
-            )}
-          </p>
-        </>
-      )}
+          {metamask && (
+            <>
+              <p>Metamask installed.</p>
+              <p>Network version: {metamask.networkVersion}</p>
+              <p>ETH Address: {account}</p>
+              <p>
+                {!account && (
+                  <button
+                    className="enableEthereumButton"
+                    onClick={() => {
+                      metamask
+                        .request({
+                          method: "eth_requestAccounts",
+                        })
+                        .then(
+                          (addresses: any) =>
+                            addresses && setAccount(addresses[0])
+                        );
+                    }}
+                  >
+                    Enable Ethereum
+                  </button>
+                )}
+              </p>
+            </>
+          )}
 
-      {!metamask && <p>Please install MetaMask!</p>}
-      {props.billboardData ? (
-        <Billboard
-          data={props.billboardData}
-          owner={account}
-          metamask={metamask}
-        />
-      ) : (
-        "Database error"
-      )}
-    </Main>
+        {!metamask && <p>Please install MetaMask!</p>}
+        {props.billboardData ? (
+          <Billboard
+            data={props.billboardData}
+            owner={account}
+            metamask={metamask}
+          />
+        ) : (
+          "Database error"
+        )}
+      </Main>
+    </RecoilRoot>
   );
 }
 
