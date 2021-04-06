@@ -1,19 +1,17 @@
 import { GetStaticProps } from "next";
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { RecoilRoot } from "recoil";
 import { Billboard } from "../components/billboard/billboard";
 import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
 import {
   BillboardData,
-  getTestBillboardData,
-  getTestBillboardDataUrls,
   TileData,
   TileSchema,
 } from "../components/test-data";
 import { getAuthenticatedSignature } from "../utils/authenticate";
 import { queryAllItems } from "../utils/database";
+import { Header } from "../components/header";
 
 interface ServerSideProps {
   billboardData: BillboardData | null;
@@ -55,7 +53,7 @@ export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
 type IndexPageProps = ServerSideProps;
 
 export default function IndexPage(props: IndexPageProps) {
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState<string | null>(null);
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
@@ -70,59 +68,103 @@ export default function IndexPage(props: IndexPageProps) {
 
   return (
     <RecoilRoot>
-      <Main>
-
-        <h2>Million ETH Homepage</h2>
-        <Link href="/about">How it works</Link>
-
-          {metamask && (
-            <>
-              <p>Metamask installed.</p>
-              <p>Network version: {metamask.networkVersion}</p>
-              <p>ETH Address: {account}</p>
-              <p>
-                {!account && (
-                  <button
-                    className="enableEthereumButton"
-                    onClick={() => {
-                      metamask
-                        .request({
-                          method: "eth_requestAccounts",
-                        })
-                        .then(
-                          (addresses: any) =>
-                            addresses && setAccount(addresses[0])
-                        );
-                    }}
-                  >
-                    Enable Ethereum
-                  </button>
-                )}
-              </p>
-            </>
-          )}
-
-        {!metamask && <p>Please install MetaMask!</p>}
-        {props.billboardData ? (
-          <Billboard
-            data={props.billboardData}
-            owner={account}
-            metamask={metamask}
-          />
-        ) : (
-          "Database error"
-        )}
-      </Main>
+      <Container>
+        <Background />
+        <Main>
+          <Header metamask={metamask} account={account} setAccount={setAccount}/>
+          <BilboardWrapper>
+            {props.billboardData ? (
+              <Billboard
+                data={props.billboardData}
+                owner={account}
+                metamask={metamask}
+              />
+            ) : (
+              "Database error"
+            )}
+          </BilboardWrapper>
+        </Main>
+      </Container>
     </RecoilRoot>
   );
 }
+
+const Background = () => {
+
+  const Rectangles = [
+    styled.div`
+      position: absolute;
+      width: 986.38px;
+      height: 1411.27px;
+      left: -250px;
+      top: -400px;
+      background: #8000FF;
+      opacity: 0.5;
+      transform: rotate(-34.17deg);
+    `,
+    styled.div`
+      position: absolute;
+      width: 636px;
+      height: 946px;
+      left: -233px;
+      top: 635px;
+      background: #191B6A;
+    `,
+    styled.div`
+      position: absolute;
+      width: 608px;
+      height: 630px;
+      left: 1064px;
+      top: -276px;
+      background: rgba(255, 0, 172, 0.11);
+    `,
+    styled.div`
+      position: absolute;
+      width: 608px;
+      height: 630px;
+      left: 868px;
+      top: 635px;      
+      background: rgba(128, 0, 255, 0.3);
+    `,
+    styled.div`
+      position: absolute;
+      width: 1608px;
+      height: 630px;
+      left: 50px;
+      top: 0px;      
+      &:before {
+        content: "TILOS";
+        font-weight: 900;
+        font-size: 1200px;
+        line-height: 0.9;
+        color: rgba(255, 0, 172, 0.43);
+      }
+    `,
+  ];
+
+  return <>{Rectangles.map((Rect, i) => <Rect key={i} />)}</>;
+};
 
 const Main = styled.div`
   backdrop-filter: blur(300px);
   color: #BFEEFC;
   mix-blend-mode: normal;
-  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #2C73FE;
-  margin-left: auto;
-  margin-right: auto;
-  width: 1002px;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9E00FF;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  font-family: PT Mono;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 95.5%;
+`;
+
+const Container = styled.div`
+  height: 1066px;
+  overflow: hidden;
+  position: relative;
+`;
+
+const BilboardWrapper = styled.div`
+  padding: 32px;
 `;

@@ -50,7 +50,6 @@ const BillboardContainer = styled.div`
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   user-select: none;
-  background-color: ${Colors.tileBackground};
 `;
 
 const BillboardRowContainer = styled.div`

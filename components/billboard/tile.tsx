@@ -113,13 +113,15 @@ const TileImg = styled.img`
   image-rendering: -moz-crisp-edges;
   image-rendering: -o-crisp-edges;
   -ms-interpolation-mode: nearest-neighbor;
+  background-color: ${Colors.tileBackground};
 `;
 
 export const EmptyTileImg = styled.div`
   width: ${TILE_SIZE}px;
   height: ${TILE_SIZE}px;
-  border: dashed 0.5px ${Colors.lightGray};
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAT0lEQVQ4T2P8////fwYGBgZGRkZGEA0CMDGyxEGakQ2DGUoODTaLHI349AwBA6kehoPfwNFYpigEwBE8GssUhSG4uKPYBDQDhkCkULsKAAAmmmfplyhaSwAAAABJRU5ErkJggg==);
+  background-size: 10px 10px;
+  opacity: .2;
   box-sizing: border-box;
-  background: ${Colors.darkGray};
   cursor: pointer;
 `;
