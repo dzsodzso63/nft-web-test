@@ -18,7 +18,9 @@ export const Header = ({metamask, account, setAccount}: HeaderProps) => {
         <>
           <p>Metamask installed.</p>
           <p>Network version: {metamask.networkVersion}</p>
-          <p>ETH Address: {account}</p>
+          <p>
+            {account && 'Wallet connected!'}
+          </p>
           <p>
             {!account && (
               <button
@@ -46,9 +48,10 @@ export const Header = ({metamask, account, setAccount}: HeaderProps) => {
 };
 
 const HeaderContainer = styled.div`
-  width: 340px;
+  height: 100%;
+  flex: 0 1 340px;
   padding: 32px;
-  overflow: hidden;
+  min-width: 180px;
 `;
 
 const H3 = styled.div`

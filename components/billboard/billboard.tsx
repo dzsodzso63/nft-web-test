@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Colors } from "../colors";
-import { BILLBOARD_WIDTH, TILE_SIZE } from "../consts";
+import { BILLBOARD_WIDTH, BREAKPOINT, TILE_SIZE } from "../consts";
 import { BillboardData } from "../test-data";
 import { EmptyTile, Tile } from "./tile";
 
@@ -50,6 +51,10 @@ const BillboardContainer = styled.div`
   width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
   user-select: none;
+  margin: 32px 32px 32px 0;
+  @media (max-width: ${BREAKPOINT}px) {
+    margin-left: 32px;
+  }
 `;
 
 const BillboardRowContainer = styled.div`

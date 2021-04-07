@@ -2,16 +2,15 @@ import { GetStaticProps } from "next";
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { RecoilRoot } from "recoil";
-import { Billboard } from "../components/billboard/billboard";
-import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH } from "../components/consts";
+import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH, BREAKPOINT } from "../components/consts";
 import {
   BillboardData,
   TileData,
   TileSchema,
 } from "../components/test-data";
-import { getAuthenticatedSignature } from "../utils/authenticate";
 import { queryAllItems } from "../utils/database";
 import { Header } from "../components/header";
+import { Billboard } from "../components/billboard/billboard";
 
 interface ServerSideProps {
   billboardData: BillboardData | null;
@@ -52,15 +51,8 @@ export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
 
 type IndexPageProps = ServerSideProps;
 
-type Scaled = {
-  scale: number;
-};
-
-const getScale = () => (console.log('calc'), typeof window !== "undefined" ? window.innerHeight / 1066 : 1);
-
 export default function IndexPage(props: IndexPageProps) {
   const [account, setAccount] = useState<string | null>(null);
-  const [scale, setScale] = useState<number>(1);
   const [metamask, setMetamask] = useState<any>(); // TODO Metamask types
   const [apiResult, setApiResult] = useState<any>(); // TODO Metamask types
 
@@ -73,13 +65,9 @@ export default function IndexPage(props: IndexPageProps) {
     }
   }, [metamask]);
 
-  useEffect(() => {
-    setScale(getScale());
-  }, []);
-
   return (
     <RecoilRoot>
-      <Container scale={scale}>
+      <Container>
         <Background />
         <Main>
           <Header metamask={metamask} account={account} setAccount={setAccount}/>
@@ -104,15 +92,15 @@ const Background = () => {
 
   const rotate = keyframes`
     from {
-      transform: rotate(0deg);
+      transform: rotate(0deg) translate3d(0, 0, 0);
     }
 
     to {
-      transform: rotate(360deg);
+      transform: rotate(360deg) translate3d(0, 0, 0);
     }
   `;
   
-  const speed = 10;
+  const speed = 20;
 
   const Rectangles = [
     styled.div`
@@ -124,25 +112,25 @@ const Background = () => {
       background: #8000FF;
       opacity: 0.5;
       transform: rotate(-34.17deg);
-      animation: ${rotate} ${speed}s linear infinite;
+      animation: ${rotate} ${speed * 4.2 | 0}s linear infinite;
     `,
     styled.div`
       position: absolute;
-      width: 636px;
-      height: 946px;
-      left: -233px;
-      top: 635px;
+      width: 236px;
+      height: 1346px;
+      left: 0px;
+      top: 335px;
       background: #191B6A;
-      animation: ${rotate} ${speed}s linear infinite;
+      animation: ${rotate} ${speed * 1.5 | 0}s linear infinite;
     `,
     styled.div`
       position: absolute;
       width: 608px;
       height: 630px;
       left: 1064px;
-      top: -276px;
+      top: 76px;
       background: rgba(255, 0, 172, 0.11);
-      animation: ${rotate} ${speed}s linear infinite;
+      animation: ${rotate} ${speed * 2 | 0}s linear infinite;
     `,
     styled.div`
       position: absolute;
@@ -151,7 +139,7 @@ const Background = () => {
       left: 868px;
       top: 635px;      
       background: rgba(128, 0, 255, 0.3);
-      animation: ${rotate} ${speed}s linear infinite;
+      animation: ${rotate} ${speed * 2.5 | 0}s linear infinite;
     `,
     styled.div`
       position: absolute;
@@ -159,12 +147,13 @@ const Background = () => {
       height: 630px;
       left: 50px;
       top: 0px;    
-      animation: ${rotate} ${speed}s linear infinite;  
+      animation: ${rotate} ${speed * 3 | 0}s linear infinite;  
       &:before {
-        content: "TILOS";
+        content: "TilosLabs";
         font-weight: 900;
-        font-size: 1200px;
+        font-size: 900px;
         line-height: 0.9;
+        letter-spacing: 90px;
         color: rgba(255, 0, 172, 0.43);
       }
     `,
@@ -174,28 +163,37 @@ const Background = () => {
 };
 
 const Main = styled.div`
-  backdrop-filter: blur(300px);
+  backdrop-filter: blur(250px);
   color: #BFEEFC;
   mix-blend-mode: normal;
   text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9E00FF;
-  width: 200%;
   display: flex;
   flex-direction: row;
   font-family: PT Mono;
   font-style: normal;
   font-weight: bold;
-  line-height: 95.5%;
+  overflow: hidden;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  @media (max-width: ${BREAKPOINT}px) {
+    flex-direction: column;
+  }
 `;
 
-const Container = styled.div<Scaled>`
-  height: 1066px;
-  width: 200%;
+const Container = styled.div`
   overflow: hidden;
-  position: relative;
-  transform: scale(${props => props.scale || 1});
-  transform-origin: top left;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
 `;
 
 const BilboardWrapper = styled.div`
-  padding: 32px;
+  height: 100%;
+  flex: 1 0 1002px;
+  overflow: scroll;
 `;
