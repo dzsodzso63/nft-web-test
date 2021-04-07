@@ -15,7 +15,11 @@ export async function uploadImage(): Promise<string> {
     inputElement.accept = SUPPORTED_IMAGE_TYPES.join(",");
     inputElement.style.display = "none";
     inputElement.onchange = () => {
-      if (inputElement != null && inputElement.files != null && inputElement.files.length === 1) {
+      if (
+        inputElement != null &&
+        inputElement.files != null &&
+        inputElement.files.length === 1
+      ) {
         const file = inputElement.files[0];
         resolve(handleImageFileSelected(file));
       }
@@ -33,14 +37,14 @@ function handleImageFileSelected(file: File): Promise<string> {
 
       const image = new Image();
       image.onload = () => {
-        if (image.naturalWidth === TILE_SIZE || image.naturalHeight === TILE_SIZE) {
+        if (dataUrl.length < 1000000) {
           resolve(dataUrl);
         } else {
-          reject("Image size should be 10x10")
+          reject("Image size should be less than 0.75 MB");
         }
-      }
+      };
       image.src = dataUrl;
-    }
+    };
     reader.readAsDataURL(file);
   });
 }

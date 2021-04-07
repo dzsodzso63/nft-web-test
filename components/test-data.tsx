@@ -59,12 +59,20 @@ export async function getTestTile(row: number, col: number) {
   };
 }
 
+export interface TileForServer {
+  BilboardID: string;
+  TileIndex: number;
+  owner: string;
+  url: string;
+  DataURI: string;
+}
+
 export function getTestTileForDataUrl(
   dataUrl: string,
   row: number,
   col: number,
   owner: string
-) {
+): TileForServer {
   return {
     BilboardID: BILLBOARD_ID,
     TileIndex: row * BILLBOARD_HEIGHT + col,
