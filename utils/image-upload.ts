@@ -36,14 +36,9 @@ function handleImageFileSelected(file: File): Promise<string> {
       const image = new Image();
       image.onload = () => {
         resolve(dataUrl);
-        // if (image.naturalWidth === TILE_SIZE || image.naturalHeight === TILE_SIZE) {
-        //   resolve(dataUrl);
-        // } else {
-        //   reject("Image size should be 10x10")
-        // }
       }
       image.src = dataUrl;
-    }
+    };
     reader.readAsDataURL(file);
   });
 }
