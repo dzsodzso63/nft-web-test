@@ -22,7 +22,7 @@ export interface TileSchema {
   DataURI: { S: string };
 }
 
-export type BillboardData = Array<Array<TileData | null>>;
+export type BillboardData = Array<Array<TileData | undefined>>;
 
 export async function getTestBillboardData(
   width: number,
@@ -44,7 +44,7 @@ function getTestTileRow(width: number, fillRatio: number, row: number) {
           url: `https://picsum.photos/seed/${randomString()}/${TILE_SIZE}/${TILE_SIZE}`,
           base64Url: null,
         }
-      : null
+      : undefined
   );
 }
 
@@ -108,7 +108,7 @@ export async function getTestBillboardDataUrls(): Promise<BillboardData> {
       Promise.all(
         rows.map(async (tile) => {
           if (tile == null) {
-            return null;
+            return;
           } else {
             return {
               ...tile,

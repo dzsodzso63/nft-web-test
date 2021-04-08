@@ -1,79 +1,42 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Colors } from "../colors";
 import { TILE_SIZE } from "../consts";
-import { getTestTileForDataUrl, TileData } from "../test-data";
-import { NextRouter, useRouter } from "next/router";
-import { uploadImage } from "../../utils/image-upload";
-import { useGetAuthenticatedSignature } from "../../utils/authenticate";
+import { TileData } from "../test-data";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { imageUploaderState, ImageUploaderStatus } from "../../recoil/atoms";
+import { accountSelector } from "../../recoil/selectors";
 
-interface TileProps {
-  tile: TileData;
-  row: number;
-  col: number;
-  account: string | null;
-  metamask: any | null;
-}
-
-interface EmptyTileProps {
-  row: number;
-  col: number;
-  account: string | null;
-  metamask: any | null;
-}
-
-const upload = (
-  row: number,
-  col: number,
-  owner: string,
-  signedMessage: string
-) => {
-  return uploadImage()
-    .then(async (dataUrl) => {
-      const item = getTestTileForDataUrl(dataUrl, row, col, owner);
-      console.log(item, row, col);
-
-      // itt akarunk https://www.blocksism.com/authentication-via-metamask-and-portis/ lekuldeni egy szignalt akarmit
-
-      await fetch("/api/putitem/", {
-        method: "PUT",
-        mode: "same-origin",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Authentication-Signed-Message": signedMessage,
-        },
-        body: JSON.stringify({ item }),
-      });
-    })
-    .catch((e) => {
-      alert(e);
-    });
+type ImageUploader = {
+  upload: () => void;
 };
 
-const refresh = (router: NextRouter) =>
-  React.useCallback(() => {
-    router.replace(router.asPath);
-  }, [router]);
+type TileProps  = {
+  tile?: TileData;
+  row: number;
+  col: number;
+  account?: string;
+};
 
-export function Tile(props: TileProps) {
-  const { tile, account, row, col, metamask } = props;
-  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
+type OwnedTileProps = TileProps & {
+  tile: TileData;
+};
 
-  const router = useRouter();
-  const refreshData = refresh(router);
+function isOwnedTileProps(props: TileProps): props is OwnedTileProps {
+  return props.tile != null;
+}
 
-  const handleTileClick = React.useCallback(async () => {
+function OwnedTile(props: OwnedTileProps & ImageUploader) {
+  const { tile, account, upload } = props;
+
+  const handleTileClick = useCallback(() => {
     if (
       account != null &&
       (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
     ) {
-      const signedMessage = await getAuthenticatedSignature();
-      if (signedMessage != null) {
-        upload(row, col, account, signedMessage).then(() => refreshData());
-      }
+      upload();
     }
-  }, [row, col, refreshData, account]);
+  }, [account, upload, tile]);
 
   return (
     <TileImg
@@ -84,25 +47,45 @@ export function Tile(props: TileProps) {
   );
 }
 
-export function EmptyTile(props: EmptyTileProps) {
-  const { row, col, account, metamask } = props;
-  const getAuthenticatedSignature = useGetAuthenticatedSignature(metamask);
+function EmptyTile(props: TileProps & ImageUploader) {
+  const { account, upload } = props;
 
-  const router = useRouter();
-  const refreshData = refresh(router);
-
-  const handleTileClick = React.useCallback(async () => {
+  const handleTileClick = React.useCallback(() => {
     if (account != null) {
-      const signedMessage = await getAuthenticatedSignature();
-      if (signedMessage != null) {
-        upload(row, col, account, signedMessage).then(() => refreshData());
-      }
+      upload();
     }
-  }, [row, col, refreshData, account]);
+  }, [account, upload]);
 
   return (
     <EmptyTileImg onClick={handleTileClick} title={account ?? undefined} />
   );
+}
+
+export const Tile = (props: TileProps) => {
+  const setImageUploader = useSetRecoilState(imageUploaderState);
+  const account = useRecoilValue(accountSelector);
+  const { row, col } = props;
+  const upload = useCallback(() => {
+    if (account) {
+      setImageUploader({
+        status: ImageUploaderStatus.INITIATED,
+        tile: {
+          row,
+          col,
+          owner: account,
+        },
+        dataURIToEdit: undefined,
+        dataURIToUpload: undefined,
+      })
+    }
+  }, [row, col, account]);
+
+  return isOwnedTileProps(props) ? (
+    <OwnedTile {...props} upload={upload} account={account}/>
+  ) : (
+    <EmptyTile {...props} upload={upload} account={account}/>
+  )
+
 }
 
 const TileImg = styled.img`

@@ -1,17 +1,15 @@
-import * as React from "react";
-import { atom, useRecoilCallback } from "recoil";
+import { useRecoilCallback } from "recoil";
 import { recoverPersonalSignature } from "eth-sig-util";
+import { signedMessage } from "../recoil/atoms";
+import { getEthereumClient } from "./ethereum";
+
 const MESSAGE_TO_SIGN =
   "Please Sign this signature request to authenticate the tile image upload process";
 
-const signedMessage = atom<Promise<string> | null>({
-  key: "signedMessage",
-  default: null,
-});
+export const useGetAuthenticatedSignature = (): (() => Promise<string>) => {
+  
+  const metamask = getEthereumClient();
 
-export const useGetAuthenticatedSignature = (
-  metamask: any
-): (() => Promise<string>) => {
   return useRecoilCallback(
     ({ snapshot, set }) => async (): Promise<string> => {
       const signedMessageCurrent = await snapshot.getPromise(signedMessage);

@@ -1,41 +1,28 @@
-import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { accountSelector } from "../../recoil/selectors";
+
 import { Colors } from "../colors";
 import { BILLBOARD_WIDTH, BREAKPOINT, TILE_SIZE } from "../consts";
 import { BillboardData } from "../test-data";
-import { EmptyTile, Tile } from "./tile";
+import { Tile } from "./tile";
 
 interface BillboardProps {
   data: BillboardData;
-  owner: string | null;
-  metamask: any | null;
 }
 
 export const Billboard = (props: BillboardProps) => {
-  const { data, owner, metamask } = props;
-
+  const { data } = props;
   const rows = data.map((tileRow, i) => {
     return (
       <BillboardRowContainer key={`row-${i}`}>
         {tileRow.map((tile, j) =>
-          tile != null ? (
-            <Tile
-              key={`tile-${i}${j}`}
-              row={i}
-              col={j}
-              tile={tile}
-              account={owner}
-              metamask={metamask}
-            />
-          ) : (
-            <EmptyTile
-              key={`tile-${i}${j}`}
-              row={i}
-              col={j}
-              account={owner}
-              metamask={metamask}
-            />
-          )
+          <Tile
+            key={`tile-${i}${j}`}
+            row={i}
+            col={j}
+            tile={tile}
+          />
         )}
       </BillboardRowContainer>
     );

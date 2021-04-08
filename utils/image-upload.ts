@@ -1,6 +1,4 @@
-import { TILE_SIZE } from "../components/consts";
-
-const SUPPORTED_IMAGE_TYPES = ["png", "gif"];
+const SUPPORTED_IMAGE_TYPES = ["png", "gif", "jpg", "jpeg"];
 let inputElement: HTMLInputElement | null = null;
 
 export async function uploadImage(): Promise<string> {
@@ -14,14 +12,18 @@ export async function uploadImage(): Promise<string> {
     inputElement.type = "file";
     inputElement.accept = SUPPORTED_IMAGE_TYPES.join(",");
     inputElement.style.display = "none";
-    inputElement.onchange = () => {
-      if (inputElement != null && inputElement.files != null && inputElement.files.length === 1) {
+    const resultCheck = () => {
+      if (inputElement != null && inputElement.files != null && inputElement.files.length) {
         const file = inputElement.files[0];
         resolve(handleImageFileSelected(file));
+        inputElement.removeEventListener('change', resultCheck);
       }
     };
+    inputElement.addEventListener('change', resultCheck);
+    
     document.body.appendChild(inputElement);
     inputElement.click();
+
   });
 }
 
@@ -33,11 +35,12 @@ function handleImageFileSelected(file: File): Promise<string> {
 
       const image = new Image();
       image.onload = () => {
-        if (image.naturalWidth === TILE_SIZE || image.naturalHeight === TILE_SIZE) {
-          resolve(dataUrl);
-        } else {
-          reject("Image size should be 10x10")
-        }
+        resolve(dataUrl);
+        // if (image.naturalWidth === TILE_SIZE || image.naturalHeight === TILE_SIZE) {
+        //   resolve(dataUrl);
+        // } else {
+        //   reject("Image size should be 10x10")
+        // }
       }
       image.src = dataUrl;
     }

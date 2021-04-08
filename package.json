@@ -11,11 +11,13 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.10.0",
     "@pinata/sdk": "^1.1.13",
+    "@types/react-image-crop": "^8.1.2",
     "@types/styled-components": "^5.1.9",
     "eth-sig-util": "^3.0.1",
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-image-crop": "^8.6.6",
     "recoil": "^0.2.0",
     "styled-components": "^5.2.1",
     "unfetch": "4.2.0"
