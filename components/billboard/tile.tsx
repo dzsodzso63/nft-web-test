@@ -11,7 +11,7 @@ type ImageUploader = {
   upload: () => void;
 };
 
-type TileProps  = {
+type TileProps = {
   tile?: TileData;
   row: number;
   col: number;
@@ -61,7 +61,7 @@ function EmptyTile(props: TileProps & ImageUploader) {
   );
 }
 
-export const Tile = (props: TileProps) => {
+export const Tile = React.memo((props: TileProps) => {
   const setImageUploader = useSetRecoilState(imageUploaderState);
   const account = useRecoilValue(accountSelector);
   const { row, col } = props;
@@ -76,17 +76,17 @@ export const Tile = (props: TileProps) => {
         },
         dataURIToEdit: undefined,
         dataURIToUpload: undefined,
-      })
+      });
     }
   }, [row, col, account]);
 
   return isOwnedTileProps(props) ? (
-    <OwnedTile {...props} upload={upload} account={account}/>
+    <OwnedTile {...props} upload={upload} account={account} />
   ) : (
-    <EmptyTile {...props} upload={upload} account={account}/>
-  )
-
-}
+    <EmptyTile {...props} upload={upload} account={account} />
+  );
+});
+Tile.displayName = "Tile";
 
 const TileImg = styled.img`
   width: ${TILE_SIZE}px;
@@ -104,7 +104,7 @@ export const EmptyTileImg = styled.div`
   height: ${TILE_SIZE}px;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAT0lEQVQ4T2P8////fwYGBgZGRkZGEA0CMDGyxEGakQ2DGUoODTaLHI349AwBA6kehoPfwNFYpigEwBE8GssUhSG4uKPYBDQDhkCkULsKAAAmmmfplyhaSwAAAABJRU5ErkJggg==);
   background-size: 10px 10px;
-  opacity: .2;
+  opacity: 0.2;
   box-sizing: border-box;
   cursor: pointer;
 `;

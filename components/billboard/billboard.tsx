@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { accountSelector } from "../../recoil/selectors";
@@ -11,25 +12,21 @@ interface BillboardProps {
   data: BillboardData;
 }
 
-export const Billboard = (props: BillboardProps) => {
+export const Billboard = React.memo((props: BillboardProps) => {
   const { data } = props;
   const rows = data.map((tileRow, i) => {
     return (
       <BillboardRowContainer key={`row-${i}`}>
-        {tileRow.map((tile, j) =>
-          <Tile
-            key={`tile-${i}${j}`}
-            row={i}
-            col={j}
-            tile={tile}
-          />
-        )}
+        {tileRow.map((tile, j) => (
+          <Tile key={`tile-${i}${j}`} row={i} col={j} tile={tile} />
+        ))}
       </BillboardRowContainer>
     );
   });
 
   return <BillboardContainer>{rows}</BillboardContainer>;
-};
+});
+Billboard.displayName = "Billboard";
 
 const BillboardContainer = styled.div`
   display: flex;
