@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { Colors } from "../colors";
 import { TILE_SIZE } from "../consts";
 import { TileData } from "../test-data";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import { imageUploaderState, ImageUploaderStatus, tileClaimerState, TileClaimerStatus } from "../../recoil/atoms";
+import { useRecoilCallback, useRecoilValue, useSetRecoilState } from "recoil";
+
 import { accountSelector } from "../../recoil/selectors";
 
 type ImageUploader = {
@@ -19,7 +20,6 @@ type TileProps = {
   tile?: TileData;
   row: number;
   col: number;
-  account?: string;
 };
 
 type OwnedTileProps = TileProps & {
@@ -31,16 +31,21 @@ function isOwnedTileProps(props: TileProps): props is OwnedTileProps {
 }
 
 function OwnedTile(props: OwnedTileProps & ImageUploader) {
-  const { tile, account, upload } = props;
+  const { tile, upload } = props;
 
-  const handleTileClick = useCallback(() => {
-    if (
-      account != null &&
-      (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
-    ) {
-      upload();
-    }
-  }, [account, upload, tile]);
+  const handleTileClick = useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const account = await snapshot.getPromise(accountSelector);
+
+      if (
+        account != null &&
+        (account === tile.owner || !tile.owner.startsWith("0x")) // todo hekk
+      ) {
+        upload();
+      }
+    },
+    [upload, tile]
+  );
 
   return (
     <TileImg
@@ -52,40 +57,50 @@ function OwnedTile(props: OwnedTileProps & ImageUploader) {
 }
 
 function EmptyTile(props: TileProps & TileClaimer) {
-  const { account, claim } = props;
+  const { claim } = props;
 
-  const handleTileClick = React.useCallback(() => {
-    if (account != null) {
-      claim();
-    }
-  }, [account, claim]);
+  const handleTileClick = useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const account = await snapshot.getPromise(accountSelector);
 
-  return (
-    <EmptyTileImg onClick={handleTileClick} title={account ?? undefined} />
+      if (account != null) {
+        claim();
+      }
+    },
+    [claim]
   );
+
+  return <EmptyTileImg onClick={handleTileClick} title={"not yet taken"} />;
 }
 
 export const Tile = React.memo((props: TileProps) => {
   const setImageUploader = useSetRecoilState(imageUploaderState);
   const setTileClaimer = useSetRecoilState(tileClaimerState);
-  const account = useRecoilValue(accountSelector);
-  const { row, col } = props;
-  const upload = useCallback(() => {
-    if (account) {
-      setImageUploader({
-        status: ImageUploaderStatus.INITIATED,
-        tile: {
-          row,
-          col,
-          owner: account,
-        },
-        dataURIToEdit: undefined,
-        dataURIToUpload: undefined,
-      });
-    }
-  }, [row, col, account]);
 
-  const claim = useCallback(() => {
+  const { row, col } = props;
+  const upload = useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const account = await snapshot.getPromise(accountSelector);
+
+      if (account) {
+        setImageUploader({
+          status: ImageUploaderStatus.INITIATED,
+          tile: {
+            row,
+            col,
+            owner: account,
+          },
+          dataURIToEdit: undefined,
+          dataURIToUpload: undefined,
+        });
+      }
+    },
+    [row, col]
+  );
+
+  const claim = useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const account = await snapshot.getPromise(accountSelector);
     if (account) {
       setTileClaimer({
         status: TileClaimerStatus.INITIATED,
@@ -95,12 +110,12 @@ export const Tile = React.memo((props: TileProps) => {
         },
       });
     }
-  }, [row, col, account]);
+  }, [row, col, ]);
 
   return isOwnedTileProps(props) ? (
-    <OwnedTile {...props} upload={upload} account={account} />
+    <OwnedTile {...props} upload={upload} />
   ) : (
-    <EmptyTile {...props} claim={claim} account={account} />
+    <EmptyTile {...props} claim={claim} />
   );
 });
 Tile.displayName = "Tile";
