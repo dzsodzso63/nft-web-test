@@ -54,6 +54,7 @@ export const Billboard = React.memo((props: BillboardProps) => {
             row,
             col,
           },
+          result: "",
         });
       }
     },
