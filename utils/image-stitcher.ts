@@ -20,6 +20,10 @@ export const assembleStitchedImage = async (
 
       const { row, col } = tileIndexToRowCol(tile.TileIndex.N);
 
+      ctx.beginPath();
+      ctx.rect(col * 10, row * 10, 10, 10);
+      ctx.fillStyle = "white";
+      ctx.fill();
       ctx.drawImage(image, col * 10, row * 10, 10, 10);
     })
   );

@@ -29,14 +29,15 @@ export const Billboard = React.memo((props: BillboardProps) => {
 
   return (
     <BillboardContainer>
-      <img src={stitchedImage} />
-      {rows}
+      <BillboardGrid />
+      <BillboardImage src={stitchedImage} />
     </BillboardContainer>
   );
 });
 Billboard.displayName = "Billboard";
 
 const BillboardContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   outline: solid 1px ${Colors.tilos};
@@ -47,6 +48,30 @@ const BillboardContainer = styled.div`
   @media (max-width: ${BREAKPOINT}px) {
     margin-left: 32px;
   }
+`;
+
+const BillboardGrid = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
+  height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAT0lEQVQ4T2P8////fwYGBgZGRkZGEA0CMDGyxEGakQ2DGUoODTaLHI349AwBA6kehoPfwNFYpigEwBE8GssUhSG4uKPYBDQDhkCkULsKAAAmmmfplyhaSwAAAABJRU5ErkJggg==);
+  background-size: 10px 10px;
+  opacity: 0.2;
+`;
+
+const BillboardImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: ${TILE_SIZE * BILLBOARD_WIDTH}px;
+  height: ${TILE_SIZE * BILLBOARD_WIDTH}px;
+  cursor: pointer;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
 `;
 
 const BillboardRowContainer = styled.div`

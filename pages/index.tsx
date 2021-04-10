@@ -74,8 +74,6 @@ function IndexPage(props: IndexPageProps) {
     }
   }, [user]);
 
-  console.log("helo", props.stitchedImage);
-
   return (
     <Container>
       <Background />
