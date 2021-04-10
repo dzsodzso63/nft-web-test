@@ -19,6 +19,7 @@ export const TileClaimModal = () => {
         You are about to claim the tile: {tileClaimer.tile?.row},{" "}
         {tileClaimer.tile?.col}
       </div>
+      <div>Result: {tileClaimer.result}</div>
       <ClaimButton onClick={handleClaim}>Claim</ClaimButton>
     </TileClaimModalContainer>
   );

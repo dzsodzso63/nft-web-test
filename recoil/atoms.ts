@@ -61,5 +61,6 @@ export const tileClaimerState = atom({
   default: {
     status: TileClaimerStatus.IDLE,
     tile: undefined as TileClaimerTile | undefined,
+    result: "",
   },
 });
