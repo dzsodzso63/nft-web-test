@@ -8,14 +8,14 @@ export const signedMessage = atom<Promise<string> | null>({
 });
 
 export const userState = atom({
-  key: 'user',
+  key: "user",
   default: {
     account: undefined as string | undefined,
   },
 });
 
 export const uiState = atom({
-  key: 'ui',
+  key: "ui",
   default: {
     visibleModal: Modal.NONE,
   },
@@ -30,13 +30,13 @@ export enum ImageUploaderStatus {
 }
 
 export type ImageUploadTile = {
-  row: number,
-  col: number,
-  owner: string,
+  row: number;
+  col: number;
+  owner: string;
 };
 
 export const imageUploaderState = atom({
-  key: 'uploadImage',
+  key: "uploadImage",
   default: {
     status: ImageUploaderStatus.IDLE,
     tile: undefined as ImageUploadTile | undefined,
@@ -48,15 +48,16 @@ export const imageUploaderState = atom({
 export enum TileClaimerStatus {
   IDLE,
   INITIATED,
+  CLAIM_REQUESTED,
 }
 
 export type TileClaimerTile = {
-  row: number,
-  col: number,
+  row: number;
+  col: number;
 };
 
 export const tileClaimerState = atom({
-  key: 'tileClaimer',
+  key: "tileClaimer",
   default: {
     status: TileClaimerStatus.IDLE,
     tile: undefined as TileClaimerTile | undefined,
