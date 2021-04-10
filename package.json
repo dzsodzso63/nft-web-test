@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "cp canvas_lib64/*so.1 node_modules/canvas/build/Release/ && next build",
+    "build": "next build",
     "start": "next start",
     "post-update": "yarn upgrade --latest",
     "test": "tsc --noEmit"
