@@ -1,6 +1,12 @@
 import * as React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilCallback, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import {
+  imageUploaderState,
+  ImageUploaderStatus,
+  tileClaimerState,
+  TileClaimerStatus,
+} from "../../recoil/atoms";
 import { accountSelector } from "../../recoil/selectors";
 
 import { Colors } from "../colors";
@@ -15,22 +21,66 @@ type BillboardProps = {
 
 export const Billboard = React.memo((props: BillboardProps) => {
   const { data, stitchedImage } = props;
-  const rows = data.map((tileRow, i) => {
-    return (
-      <>
-        <BillboardRowContainer key={`row-${i}`}>
-          {tileRow.map((tile, j) => (
-            <Tile key={`tile-${i}${j}`} row={i} col={j} tile={tile} />
-          ))}
-        </BillboardRowContainer>
-      </>
-    );
-  });
+
+  const setImageUploader = useSetRecoilState(imageUploaderState);
+  const setTileClaimer = useSetRecoilState(tileClaimerState);
+
+  const upload = useRecoilCallback(
+    ({ snapshot }) => async (row: number, col: number) => {
+      const account = await snapshot.getPromise(accountSelector);
+
+      if (account) {
+        setImageUploader({
+          status: ImageUploaderStatus.INITIATED,
+          tile: {
+            row,
+            col,
+            owner: account,
+          },
+          dataURIToEdit: undefined,
+          dataURIToUpload: undefined,
+        });
+      }
+    },
+    []
+  );
+
+  const claim = useRecoilCallback(
+    ({ snapshot }) => async (row: number, col: number) => {
+      const account = await snapshot.getPromise(accountSelector);
+      if (account) {
+        setTileClaimer({
+          status: TileClaimerStatus.INITIATED,
+          tile: {
+            row,
+            col,
+          },
+        });
+      }
+    },
+    []
+  );
+
+  const onClick = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const col = Math.floor(event.nativeEvent.offsetX / TILE_SIZE);
+      const row = Math.floor(event.nativeEvent.offsetY / TILE_SIZE);
+      const tile = data[row][col];
+      if (tile != null) {
+        // tile is owned
+        upload(row, col);
+      } else {
+        // tile is unclaimed
+        claim(row, col);
+      }
+    },
+    [upload, claim]
+  );
 
   return (
     <BillboardContainer>
       <BillboardGrid />
-      <BillboardImage src={stitchedImage} />
+      <BillboardImage src={stitchedImage} onClick={onClick} />
     </BillboardContainer>
   );
 });
