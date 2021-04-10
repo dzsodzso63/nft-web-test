@@ -44,3 +44,21 @@ export const imageUploaderState = atom({
     dataURIToUpload: undefined as string | undefined,
   },
 });
+
+export enum TileClaimerStatus {
+  IDLE,
+  INITIATED,
+}
+
+export type TileClaimerTile = {
+  row: number,
+  col: number,
+};
+
+export const tileClaimerState = atom({
+  key: 'tileClaimer',
+  default: {
+    status: TileClaimerStatus.IDLE,
+    tile: undefined as TileClaimerTile | undefined,
+  },
+});

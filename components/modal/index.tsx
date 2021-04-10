@@ -3,10 +3,12 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { visibleModalSelector } from "../../recoil/selectors";
 import { ImageUploadModal } from "./imageUploadModal";
+import { TileClaimModal } from "./tileClaimModal";
 
 export enum Modal {
   NONE,
   UPLOAD_IMAGE,
+  TILE_CLAIM
 };
 
 type ModalProps = {
@@ -17,6 +19,7 @@ type ModalProps = {
 const modalContent = {
   [Modal.NONE]: null,
   [Modal.UPLOAD_IMAGE]: <ImageUploadModal />,
+  [Modal.TILE_CLAIM]: <TileClaimModal />
 };
 
 export const ModalContainer = () => {

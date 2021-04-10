@@ -17,6 +17,7 @@ import { Background } from "../components/background";
 import { UploadManager } from "../components/UploadManager";
 import { userState } from "../recoil/atoms";
 import { getEthereumClient } from "../utils/ethereum";
+import { ClaimManager } from "../components/ClaimManager";
 
 interface ServerSideProps {
   billboardData: BillboardData | null;
@@ -86,6 +87,7 @@ function IndexPage(props: IndexPageProps) {
       </Main>
       <ModalContainer />
       <UploadManager />
+      <ClaimManager />
     </Container>
   );
 }

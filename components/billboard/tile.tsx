@@ -4,11 +4,15 @@ import { Colors } from "../colors";
 import { TILE_SIZE } from "../consts";
 import { TileData } from "../test-data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { imageUploaderState, ImageUploaderStatus } from "../../recoil/atoms";
+import { imageUploaderState, ImageUploaderStatus, tileClaimerState, TileClaimerStatus } from "../../recoil/atoms";
 import { accountSelector } from "../../recoil/selectors";
 
 type ImageUploader = {
   upload: () => void;
+};
+
+type TileClaimer = {
+  claim: () => void;
 };
 
 type TileProps = {
@@ -47,14 +51,14 @@ function OwnedTile(props: OwnedTileProps & ImageUploader) {
   );
 }
 
-function EmptyTile(props: TileProps & ImageUploader) {
-  const { account, upload } = props;
+function EmptyTile(props: TileProps & TileClaimer) {
+  const { account, claim } = props;
 
   const handleTileClick = React.useCallback(() => {
     if (account != null) {
-      upload();
+      claim();
     }
-  }, [account, upload]);
+  }, [account, claim]);
 
   return (
     <EmptyTileImg onClick={handleTileClick} title={account ?? undefined} />
@@ -63,6 +67,7 @@ function EmptyTile(props: TileProps & ImageUploader) {
 
 export const Tile = React.memo((props: TileProps) => {
   const setImageUploader = useSetRecoilState(imageUploaderState);
+  const setTileClaimer = useSetRecoilState(tileClaimerState);
   const account = useRecoilValue(accountSelector);
   const { row, col } = props;
   const upload = useCallback(() => {
@@ -80,10 +85,22 @@ export const Tile = React.memo((props: TileProps) => {
     }
   }, [row, col, account]);
 
+  const claim = useCallback(() => {
+    if (account) {
+      setTileClaimer({
+        status: TileClaimerStatus.INITIATED,
+        tile: {
+          row,
+          col,
+        },
+      });
+    }
+  }, [row, col, account]);
+
   return isOwnedTileProps(props) ? (
     <OwnedTile {...props} upload={upload} account={account} />
   ) : (
-    <EmptyTile {...props} upload={upload} account={account} />
+    <EmptyTile {...props} claim={claim} account={account} />
   );
 });
 Tile.displayName = "Tile";
