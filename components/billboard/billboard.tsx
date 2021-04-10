@@ -8,23 +8,31 @@ import { BILLBOARD_WIDTH, BREAKPOINT, TILE_SIZE } from "../consts";
 import { BillboardData } from "../test-data";
 import { Tile } from "./tile";
 
-interface BillboardProps {
+type BillboardProps = {
   data: BillboardData;
-}
+  stitchedImage: string;
+};
 
 export const Billboard = React.memo((props: BillboardProps) => {
-  const { data } = props;
+  const { data, stitchedImage } = props;
   const rows = data.map((tileRow, i) => {
     return (
-      <BillboardRowContainer key={`row-${i}`}>
-        {tileRow.map((tile, j) => (
-          <Tile key={`tile-${i}${j}`} row={i} col={j} tile={tile} />
-        ))}
-      </BillboardRowContainer>
+      <>
+        <BillboardRowContainer key={`row-${i}`}>
+          {tileRow.map((tile, j) => (
+            <Tile key={`tile-${i}${j}`} row={i} col={j} tile={tile} />
+          ))}
+        </BillboardRowContainer>
+      </>
     );
   });
 
-  return <BillboardContainer>{rows}</BillboardContainer>;
+  return (
+    <BillboardContainer>
+      <img src={stitchedImage} />
+      {rows}
+    </BillboardContainer>
+  );
 });
 Billboard.displayName = "Billboard";
 

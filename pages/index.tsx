@@ -2,12 +2,12 @@ import { GetStaticProps } from "next";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { RecoilRoot, useRecoilState } from "recoil";
-import { BILLBOARD_HEIGHT, BILLBOARD_WIDTH, BREAKPOINT } from "../components/consts";
 import {
-  BillboardData,
-  TileData,
-  TileSchema,
-} from "../components/test-data";
+  BILLBOARD_HEIGHT,
+  BILLBOARD_WIDTH,
+  BREAKPOINT,
+} from "../components/consts";
+import { BillboardData, TileData, TileSchema } from "../components/test-data";
 import { queryAllItems } from "../utils/database";
 import { Header } from "../components/header";
 import { Billboard } from "../components/billboard/billboard";
@@ -18,9 +18,11 @@ import { UploadManager } from "../components/UploadManager";
 import { userState } from "../recoil/atoms";
 import { getEthereumClient } from "../utils/ethereum";
 import { ClaimManager } from "../components/ClaimManager";
+import { assembleStitchedImage } from "../utils/image-stitcher";
 
 interface ServerSideProps {
   billboardData: BillboardData | null;
+  stitchedImage: string;
 }
 
 const bilboardData = (queryResult: { Items: TileSchema[] }) => {
@@ -47,11 +49,13 @@ const bilboardData = (queryResult: { Items: TileSchema[] }) => {
 };
 
 export const getServerSideProps: GetStaticProps<ServerSideProps> = async () => {
-  const data = await queryAllItems();
+  const data = (await queryAllItems()) as { Items: TileSchema[] };
+  const stitchedImage = await assembleStitchedImage(data.Items);
 
   return {
     props: {
-      billboardData: bilboardData(data as { Items: TileSchema[] }),
+      billboardData: bilboardData(data),
+      stitchedImage: stitchedImage,
     },
   };
 };
@@ -70,6 +74,8 @@ function IndexPage(props: IndexPageProps) {
     }
   }, [user]);
 
+  console.log("helo", props.stitchedImage);
+
   return (
     <Container>
       <Background />
@@ -79,6 +85,7 @@ function IndexPage(props: IndexPageProps) {
           {props.billboardData ? (
             <Billboard
               data={props.billboardData}
+              stitchedImage={props.stitchedImage}
             />
           ) : (
             "Database error"
@@ -92,15 +99,19 @@ function IndexPage(props: IndexPageProps) {
   );
 }
 
-const Root = (props: IndexPageProps) => <RecoilRoot><IndexPage {...props}/></RecoilRoot>;
+const Root = (props: IndexPageProps) => (
+  <RecoilRoot>
+    <IndexPage {...props} />
+  </RecoilRoot>
+);
 
 export default Root;
 
 const Main = styled.div`
   backdrop-filter: blur(250px);
-  color: #BFEEFC;
+  color: #bfeefc;
   mix-blend-mode: normal;
-  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9E00FF;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9e00ff;
   display: flex;
   flex-direction: row;
   font-family: PT Mono;
