@@ -12,7 +12,6 @@ import { accountSelector } from "../../recoil/selectors";
 import { Colors } from "../colors";
 import { BILLBOARD_WIDTH, BREAKPOINT, TILE_SIZE } from "../consts";
 import { BillboardData } from "../test-data";
-import { Tile } from "./tile";
 
 type BillboardProps = {
   data: BillboardData;
