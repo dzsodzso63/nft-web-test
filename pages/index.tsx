@@ -106,7 +106,7 @@ const Root = (props: IndexPageProps) => (
 export default Root;
 
 const Main = styled.div`
-  backdrop-filter: blur(250px);
+  backdrop-filter: blur(300px);
   color: #bfeefc;
   mix-blend-mode: normal;
   text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25), 0px 2px 10px #9e00ff;
